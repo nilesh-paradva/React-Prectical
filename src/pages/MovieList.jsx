@@ -10,8 +10,6 @@ const MovieList = () => {
     const dispatch =useDispatch();
     const navigate = useNavigate();
     const [Search, setSearch] = useState("");
-    const [movieFilter, setDepartmentFilter] = useState("");
-    const [positionfilter, setPositionFilter] = useState("");
     const {movies} = useSelector((state) => state.CrudReducer);
     console.log("movies", movies);
 
@@ -23,11 +21,8 @@ const MovieList = () => {
         dispatch(GetMovieThunk())
     }, [])
 
-    const filteredData = movies.filter((movie) => ["title"].some((key) => movie[key].toLowerCase().includes(Search))).filter((movie) => movieFilter === "" || movie.title === movieFilter).filter((movie) => positionfilter === "" || movie.title === positionfilter);
-    // useEffect(() => {
-    //     dispatch(setPositionFilter(filteredData))
-    // })
-
+    const filteredMovies = movies.filter((movie) =>movie.title.toLowerCase().includes(Search.toLowerCase()));
+    
     return (
         <>
             <section className="h-screen flex items-center justify-center">
@@ -35,15 +30,7 @@ const MovieList = () => {
                     <Row>
                         <Col lg={12}>
                         <div className="search mb-4">
-                            <input type="text" placeholder="Search..." onChange={(e) => setSearch(e.target.value)} />
-                            <select onChange={(e) => setDepartmentFilter(e.target.value)}>
-                                <option value="">All</option>
-                                {filteredData.map((movie) => (
-                                    <option key={movie.id} value={movie.title}>
-                                        {movie.title}
-                                    </option>
-                                ))}
-                            </select>
+                        <input type="text" placeholder="Search..." className="mt-3 px-3 py-2 border rounded-lg mb-3 outline-none" value={Search} onChange={ (e) => setSearch(e.target.value)} />
                         </div>
                             <div className="movie-list">
                                 <table className="w-full">
@@ -59,9 +46,9 @@ const MovieList = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {movies.map((movie) => (
+                                        {filteredMovies.map((movie) => (
                                             <tr key={movie.id}>
-                                                <td>{movie.image}</td>
+                                                <td className="flex justify-center"><img src={movie.image} alt="" className="w-[50%] rounded-lg"/></td>
                                                 <td>{movie.title}</td>
                                                 <td>{movie.description}</td>
                                                 <td>{movie.gern}</td>
